@@ -24,7 +24,8 @@ public class AutomobileDAO extends DAO<Automobile> {
         ResultSet resultSet = statement.executeQuery(sql);
         while (resultSet.next()) {
             Automobile automobile = new Automobile(Integer.parseInt(resultSet.getString("automobile_id")),
-                    Automobile.Segment.S, resultSet.getString("name"),
+                    Automobile.Segment.valueOf(resultSet.getString("segment")),
+                    resultSet.getString("name"),
                     resultSet.getString("manufacturer"),
                     Float.parseFloat(resultSet.getString("price")),
                     resultSet.getBoolean("is_in_stock"));

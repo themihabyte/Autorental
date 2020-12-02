@@ -1,6 +1,9 @@
 package controller;
 
 import model.entity.Automobile;
+import model.service.CatalogueService;
+import model.service.Service;
+import model.service.ServiceFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,14 +16,15 @@ import java.util.List;
 
 @WebServlet("/catalogue-process")
 public class CatalogueServlet extends HttpServlet {
+    CatalogueService catalogueService;
     @Override
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-        List<String> automobiles= new ArrayList<>();
-        automobiles.add("Mercedes");
-        automobiles.add("Bugatti");
-        httpServletRequest.setAttribute("automobiles", automobiles);
+        catalogueService = new CatalogueService();
+        List<String> automobiles= catalogueService.getCatalogue();
+
+        httpServletRequest.setAttribute("list", automobiles);
         getServletContext()
-                .getRequestDispatcher("/catalogue")
+                .getRequestDispatcher("/catalogue-jsp")
                 .forward(httpServletRequest, httpServletResponse);
     }
 }

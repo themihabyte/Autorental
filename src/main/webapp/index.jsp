@@ -6,6 +6,10 @@
     </head>
     <body>
         <h1>Welcome!</h1>
+        <form>
+            <a href>Login</a>
+            <a href>Register</a>
+        </form>
         <c:url value="/catalogue-process" var = "importUrl">
             <c:param name="pageName" value="import catalogue"/>
         </c:url> 

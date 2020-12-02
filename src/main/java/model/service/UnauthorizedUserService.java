@@ -3,14 +3,13 @@ package model.service;
 import model.dataaccessunit.ConnectionPool;
 import model.dataaccessunit.DAO;
 import model.dataaccessunit.DAOFactory;
+import model.entity.Automobile;
 import model.entity.User;
-
-import java.sql.SQLException;
 
 //TODO
 public class UnauthorizedUserService implements Service{
-    DAO userDAO;
-    DAO automobileDAO;
+    DAO<User> userDAO;
+    DAO<Automobile> automobileDAO;
 
 
     protected UnauthorizedUserService() {

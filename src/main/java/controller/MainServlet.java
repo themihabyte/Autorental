@@ -16,14 +16,6 @@ import java.util.List;
 public class MainServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-//        List<Automobile> automobiles = null;
-//        try {
-//            AutomobileDAO automobileDAO = (AutomobileDAO) DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, ConnectionPool.getConnection());
-//            automobiles = automobileDAO.getAll();
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-//
 //        PrintWriter out = httpServletResponse.getWriter();
 //        for (Automobile automobile: automobiles){
 //            out.println(automobile);
