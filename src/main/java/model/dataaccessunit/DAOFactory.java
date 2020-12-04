@@ -2,7 +2,7 @@ package model.dataaccessunit;
 
 import java.sql.Connection;
 
-public class DAOFactory {
+ public class DAOFactory {
     public enum Entities{USER, AUTOMOBILE, ORDER, BILL}
     public static DAO getDAO(Entities entity, Connection connection) {
         switch (entity){

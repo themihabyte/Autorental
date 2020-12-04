@@ -1,14 +1,16 @@
 package model.entity;
 
+import model.service.UserServiceFactory;
+
 public class User {
-    public enum Role{ADMINISTRATOR, MANAGER, CUSTOMER};
+    ;
     private int id;
     private String username;
     private String password;
-    private Role role;
+    private UserServiceFactory.UserRole role;
     private boolean isBanned;
 
-    public User(int id, String username, String password, Role role, boolean isBanned) {
+    public User(int id, String username, String password, UserServiceFactory.UserRole role, boolean isBanned) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -16,7 +18,7 @@ public class User {
         this.isBanned = isBanned;
     }
 
-    public User(String username, String password, Role role) {
+    public User(String username, String password, UserServiceFactory.UserRole role) {
         this.username = username;
         this.password = password;
         this.role = role;
@@ -46,11 +48,11 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
+    public UserServiceFactory.UserRole getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(UserServiceFactory.UserRole role) {
         this.role = role;
     }
 

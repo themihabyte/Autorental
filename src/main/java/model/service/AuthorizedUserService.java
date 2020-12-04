@@ -2,17 +2,26 @@ package model.service;
 
 import model.dataaccessunit.*;
 import model.entity.User;
+
 //TODO
 // create DAO in methods
-public abstract class AuthorizedUserService implements Service{
-    User user;
+public abstract class AuthorizedUserService implements UserService {
+    protected User user;
     ConnectionPool connectionPool;
     DAO userDAO;
     DAO automobileDAO;
     DAO billDAO;
     DAO orderDAO;
 
-    protected AuthorizedUserService(String username, String password, User.Role role) {
-        this.user = new User(username, password, role);
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    protected AuthorizedUserService(User user) {
+        this.user = user;
     }
 }

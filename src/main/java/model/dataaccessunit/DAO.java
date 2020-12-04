@@ -20,7 +20,7 @@ public abstract class DAO<T> {
     public abstract T getEntityByID(long ID);
     public abstract T update(T entity);
     public abstract void delete(long id);
-    public abstract void create(T entity);
+    public abstract void create(T entity) throws SQLException;
 
     public void close(Statement statement) throws SQLException {
         if (statement != null) {

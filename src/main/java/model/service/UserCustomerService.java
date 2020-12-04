@@ -6,10 +6,10 @@ import model.entity.User;
 
 import java.util.Date;
 //TODO
-public class CustomerService extends AuthorizedUserService {
+public class UserCustomerService extends AuthorizedUserService {
 
-    protected CustomerService(String username, String password, User.Role role) {
-        super(username, password, role);
+    protected UserCustomerService(User user) {
+        super(user);
     }
 
     public Order makeOrder(String passportDetails, Date startDate, Date endDate, boolean isHasDriver, int automobile){

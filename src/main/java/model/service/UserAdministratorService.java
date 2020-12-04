@@ -1,11 +1,12 @@
 package model.service;
 import model.entity.Automobile;
 import model.entity.User;
-//TODO
-public class AdministratorService extends AuthorizedUserService{
 
-    protected AdministratorService(String username, String password, User.Role role) {
-        super(username, password, role);
+//TODO
+public class UserAdministratorService extends AuthorizedUserService {
+
+    protected UserAdministratorService(User user) {
+        super(user);
     }
 
     public void addAutomobile(Automobile.Segment segment, String name, String manufacturer, float price, boolean isInStock){

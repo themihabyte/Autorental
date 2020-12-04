@@ -6,11 +6,10 @@
         <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
     </head>
     <body>
-        <%
-            List<String> list =(List) request.getAttribute("list");
-            for(String str : list){
-                out.print(str+"<br>");
-            }
-        %>
+        <c:forEach items="${list}" var="element">
+              <tr>
+                <td>${element}</td>
+              </tr><br>
+        </c:forEach>
     </body>
 </html>

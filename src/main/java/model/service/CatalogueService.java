@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CatalogueService{
-    private DAO<Automobile> automobileDAO;
+    private static DAO<Automobile> automobileDAO;
 
     public CatalogueService() {
     }
 
-    public List<String> getCatalogue(){
+    public static List<String> getCatalogue(){
         List<Automobile> automobiles= new ArrayList<>();
         try {
             automobileDAO = DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, ConnectionPool.getConnection());
