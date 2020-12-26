@@ -8,7 +8,11 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ConnectionPool {
+    private ConnectionPool() {
+    }
+
     private static DataSource dataSource;
+    private static Connection connection;
     private static DataSource getDataSource(){
         if (dataSource == null){
             synchronized (ConnectionPool.class){
@@ -28,6 +32,11 @@ public class ConnectionPool {
     }
 
     public static Connection getConnection() throws SQLException {
-        return getDataSource().getConnection();
+        connection = getDataSource().getConnection();
+        return connection;
+    }
+
+    public static void closeConnection() throws SQLException {
+        connection.close();
     }
 }

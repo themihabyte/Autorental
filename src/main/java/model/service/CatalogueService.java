@@ -1,36 +1,84 @@
 package model.service;
 
+import model.dataaccessunit.AutomobileDAO;
 import model.dataaccessunit.ConnectionPool;
-import model.dataaccessunit.DAO;
 import model.dataaccessunit.DAOFactory;
 import model.entity.Automobile;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
-public class CatalogueService{
-    private static DAO<Automobile> automobileDAO;
+public class CatalogueService {
+    private AutomobileDAO automobileDAO;
 
     public CatalogueService() {
     }
 
-    public static List<String> getCatalogue(){
-        List<Automobile> automobiles= new ArrayList<>();
+    public List<String> getManufacturers() throws SQLException {
+        List<String> manufacturers = null;
         try {
-            automobileDAO = DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, ConnectionPool.getConnection());
+            automobileDAO = (AutomobileDAO) DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, ConnectionPool.getConnection());
+            manufacturers = automobileDAO.getManufacturers();
+            ConnectionPool.closeConnection();
         } catch (SQLException throwables) {
-            //TODO exception
+            throw new SQLException("No connection to DB");
         }
+
+        return manufacturers;
+    }
+
+    public List<Automobile> getAllAutomobiles() throws SQLException {
+        List<Automobile> automobiles;
         try {
+            automobileDAO = (AutomobileDAO) DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, ConnectionPool.getConnection());
             automobiles = automobileDAO.getAll();
+            ConnectionPool.closeConnection();
         } catch (SQLException throwables) {
-            //TODO
+            throw new SQLException("No connection to DB");
         }
-        List<String> autoString = new ArrayList<>();
-        for(Automobile automobile: automobiles){
-            autoString.add(automobile.toString());
+
+        return automobiles;
+    }
+
+    public List<Automobile> getAutomobilesFiltered(Map<String, String> filter) throws SQLException {
+        List<Automobile> automobiles;
+        try {
+            automobileDAO = (AutomobileDAO) DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, ConnectionPool.getConnection());
+            automobiles = automobileDAO.getAutomobilesFiltered(filter);
+            ConnectionPool.closeConnection();
+        } catch (SQLException throwables) {
+            throw new SQLException("No connection to DB");
         }
-        return autoString;
+        return automobiles;
+    }
+
+    public List<Automobile> sortAlphabetically(List<Automobile> automobiles) {
+        automobiles.sort((o1, o2) -> {
+            char[] chars1 = o1.getName().toCharArray();
+            char[] chars2 = o2.getName().toCharArray();
+            int length = Math.min(chars1.length, chars2.length);
+            for (int i = 0; i < length; i++) {
+                if (chars1[i] < chars2[i]) return 1;
+                else if (chars1[i] > chars2[i]) return -1;
+            }
+            return 0;
+        });
+        return automobiles;
+    }
+
+    public List<Automobile> sortByValue(List<Automobile> automobiles, boolean descending) {
+        Comparator<Automobile> automobileValueComparator = new Comparator<Automobile>() {
+
+            @Override
+            public int compare(Automobile o1, Automobile o2) {
+                return Float.compare(o1.getPrice(), o2.getPrice());
+            }
+        };
+        if (descending) automobiles.sort(automobileValueComparator.reversed());
+        else automobiles.sort(automobileValueComparator);
+        return automobiles;
     }
 }

@@ -2,7 +2,6 @@ package model.service;
 import model.entity.Automobile;
 import model.entity.User;
 
-//TODO
 public class UserAdministratorService extends AuthorizedUserService {
 
     protected UserAdministratorService(User user) {

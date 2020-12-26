@@ -7,11 +7,12 @@
     </head>
     <body>
     <%@ page import ="model.service.*" %>
-    <form action="Login" method="POST">
+    <form action="login-servlet" method="POST">
         <label for="username">username:</label><br>
         <input type="text" id="username" name="username"><br>
         <label for="password">password:</label><br>
         <input type="password" id="password" name="password">
+        <c:out value="${error_message}"/><br>
         <input type="submit" value="Log-in">
       </form>
     </body>

@@ -7,30 +7,32 @@ import model.entity.User;
 
 import java.sql.SQLException;
 
-//TODO
 public class UnauthorizedUserService implements UserService {
     private AuthorizedUserDAO userDAO;
+
     protected UnauthorizedUserService() {
     }
 
-    public UserService login(String username, String password){
+    public UserService login(String username, String password) throws SQLException {
         try {
             userDAO = (AuthorizedUserDAO) DAOFactory.getDAO(DAOFactory.Entities.USER, ConnectionPool.getConnection());
         } catch (SQLException throwables) {
-            //TODO
+            throw new SQLException("No connection to DataBase");
         }
-        User user = null;
+        User user;
         try {
             user = userDAO.findByUsernamePassword(username, password);
         } catch (SQLException throwables) {
-            //TODO
-            throwables.printStackTrace();
-            System.out.println("Poshel nahui");
+            throw new SQLException("Invalid username or password");
         }
         return UserServiceFactory.getUserService(user);
     }
 
-    public void register(String username, String password){
-        RegistrationService.registerUser(username, password, UserServiceFactory.UserRole.CUSTOMER);
+    public void register(String username, String password) throws SQLException {
+        try {
+            new RegistrationService().registerUser(username, password, UserServiceFactory.UserRole.CUSTOMER);
+        } catch (SQLException sqlException) {
+            throw sqlException;
+        }
     }
 }

@@ -13,8 +13,9 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>catalogue</servlet-name>
-    <url-pattern>/catalogue-jsp</url-pattern>
+    <url-pattern>/catalogue-page</url-pattern>
   </servlet-mapping>
+
   <servlet>
     <servlet-name>index</servlet-name>
     <jsp-file>/index.jsp</jsp-file>
@@ -22,14 +23,6 @@
   <servlet-mapping>
     <servlet-name>index</servlet-name>
     <url-pattern>/start-page</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>list</servlet-name>
-    <jsp-file>/list.jsp</jsp-file>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>list</servlet-name>
-    <url-pattern>/list</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -40,6 +33,7 @@
     <servlet-name>login</servlet-name>
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
+
   <servlet>
     <servlet-name>register</servlet-name>
     <jsp-file>/registerPage.jsp</jsp-file>
@@ -49,8 +43,58 @@
     <url-pattern>/register</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>createOrder</servlet-name>
+    <jsp-file>/orderCreationPage.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>createOrder</servlet-name>
+    <url-pattern>/create-order</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>customerPersonalPage</servlet-name>
+    <jsp-file>/customerPersonalPage.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>customerPersonalPage</servlet-name>
+    <url-pattern>/customer-personal-page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>order</servlet-name>
+    <jsp-file>/order.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>order</servlet-name>
+    <url-pattern>/order</url-pattern>
+  </servlet-mapping>
+
+  <filter>
+    <filter-name>AuthFilter</filter-name>
+    <filter-class>controller.filter.AuthFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>AuthFilter</filter-name>
+    <url-pattern>/start-page</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>CustomerPagesFilter</filter-name>
+    <filter-class>controller.filter.CustomerPagesFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CustomerPagesFilter</filter-name>
+    <url-pattern>/create-order</url-pattern>
+    <url-pattern>/create-order-servlet</url-pattern>
+    <url-pattern>/customer-personal-page</url-pattern>
+    <url-pattern>/customer-personal-page-servlet</url-pattern>
+    <url-pattern>/payment-servlet</url-pattern>
+  </filter-mapping>
+
+
 <welcome-file-list>
-   <welcome-file>Main</welcome-file>
+  <welcome-file>index.jsp</welcome-file>
 </welcome-file-list>
 
 </web-app>

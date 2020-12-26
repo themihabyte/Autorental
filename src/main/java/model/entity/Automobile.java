@@ -1,5 +1,7 @@
 package model.entity;
 
+import java.util.List;
+
 public class Automobile {
     public enum Segment {
         A, B, C, D, E, F, J, M, S

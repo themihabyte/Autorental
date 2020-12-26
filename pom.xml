@@ -10,7 +10,6 @@
   <packaging>war</packaging>
 
   <name>ServletTest Maven Webapp</name>
-  <!-- FIXME change it to the project's website -->
   <url>localhost:8080</url>
 
   <properties>
@@ -76,7 +75,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>3.1</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>

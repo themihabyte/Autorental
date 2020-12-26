@@ -8,19 +8,19 @@ import model.entity.User;
 import java.sql.SQLException;
 
 public class RegistrationService {
-    private static AuthorizedUserDAO userDAO;
+    private AuthorizedUserDAO userDAO;
 
-    public static void registerUser(String username, String password,
-                                    UserServiceFactory.UserRole role){
+    RegistrationService() {
+    }
+
+    void registerUser(String username, String password,
+                      UserServiceFactory.UserRole role) throws SQLException {
         try {
             userDAO = (AuthorizedUserDAO) DAOFactory.getDAO(DAOFactory.Entities.USER, ConnectionPool.getConnection());
-        } catch (SQLException throwables) {
-            //TODO
-        }
-        try {
             userDAO.create(new User(username, password, role));
+            ConnectionPool.closeConnection();
         } catch (SQLException throwables) {
-            //TODO
+            throw new SQLException("No connection to Data Base");
         }
     }
 }

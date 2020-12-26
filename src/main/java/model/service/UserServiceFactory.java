@@ -20,6 +20,8 @@ public class UserServiceFactory {
         }
         return null;
     }
-
+    public static UserService getUserService(){
+        return new UnauthorizedUserService();
+    }
     public enum UserRole {ADMINISTRATOR, MANAGER, CUSTOMER, UNAUTHORIZED_USER}
 }

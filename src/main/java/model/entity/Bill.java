@@ -1,16 +1,22 @@
 package model.entity;
 
 public class Bill {
-    private int orderID;
+    private int orderId;
     private float price;
     private boolean isPayed;
 
-    public int getOrderID() {
-        return orderID;
+    public Bill(int orderId, float price, boolean isPayed) {
+        this.orderId = orderId;
+        this.price = price;
+        this.isPayed = isPayed;
     }
 
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public float getPrice() {

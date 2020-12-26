@@ -1,23 +1,62 @@
 package model.entity;
 
-import java.util.Date;
 
 public class Order {
     private int id;
     private int userID;
     private int automobileID;
     private String passportDetails;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
+    private Bill bill;
+    private Automobile automobile;
+    private String rejectionReason;
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+
+    public Automobile getAutomobile() {
+        return automobile;
+    }
+
+    public void setAutomobile(Automobile automobile) {
+        this.automobile = automobile;
+    }
+
+    public Bill getBill() {
+        return bill;
+    }
+
+    public void setBill(Bill bill) {
+        this.bill = bill;
+    }
+
     private boolean isHasDriver;
     private boolean isDenied;
 
-    public Order(int userID, String passportDetails, Date startDate, Date endDate, boolean isHasDriver, Bill bill, int automobileID) {
+    public Order(int id, int userID, int automobileID, String passportDetails, String startDate, String endDate, boolean isHasDriver, boolean isDenied) {
+        this.id = id;
+        this.userID = userID;
+        this.automobileID = automobileID;
+        this.passportDetails = passportDetails;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.isHasDriver = isHasDriver;
+        this.isDenied = isDenied;
+    }
+
+    public Order(int userID, int automobileID, String passportDetails, String startDate, String endDate, boolean isHasDriver, boolean isDenied) {
         this.userID = userID;
         this.passportDetails = passportDetails;
         this.startDate = startDate;
         this.endDate = endDate;
         this.isHasDriver = isHasDriver;
+        this.isDenied = isDenied;
         this.automobileID = automobileID;
     }
 
@@ -45,19 +84,19 @@ public class Order {
         this.passportDetails = passportDetails;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 

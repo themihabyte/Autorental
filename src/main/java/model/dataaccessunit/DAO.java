@@ -1,13 +1,9 @@
 package model.dataaccessunit;
 
-import org.postgresql.ds.PGConnectionPoolDataSource;
-
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public abstract class DAO<T> {
     protected Connection connection;
@@ -17,10 +13,10 @@ public abstract class DAO<T> {
     }
 
     public abstract List<T> getAll() throws SQLException;
-    public abstract T getEntityByID(long ID);
-    public abstract T update(T entity);
-    public abstract void delete(long id);
-    public abstract void create(T entity) throws SQLException;
+    public abstract T getEntityByID(int ID) throws SQLException;
+    public abstract void update(T entity) throws SQLException;
+    public abstract void delete(int id) throws SQLException;
+    public abstract int create(T entity) throws SQLException;
 
     public void close(Statement statement) throws SQLException {
         if (statement != null) {
