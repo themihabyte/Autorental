@@ -12,41 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 public class CatalogueService {
-    private AutomobileDAO automobileDAO;
 
     public CatalogueService() {
-    }
-
-    public List<String> getManufacturers() throws SQLException {
-        List<String> manufacturers = null;
-        try {
-            automobileDAO = (AutomobileDAO) DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, ConnectionPool.getConnection());
-            manufacturers = automobileDAO.getManufacturers();
-            ConnectionPool.closeConnection();
-        } catch (SQLException throwables) {
-            throw new SQLException("No connection to DB");
-        }
-
-        return manufacturers;
-    }
-
-    public List<Automobile> getAllAutomobiles() throws SQLException {
-        List<Automobile> automobiles;
-        try {
-            automobileDAO = (AutomobileDAO) DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, ConnectionPool.getConnection());
-            automobiles = automobileDAO.getAll();
-            ConnectionPool.closeConnection();
-        } catch (SQLException throwables) {
-            throw new SQLException("No connection to DB");
-        }
-
-        return automobiles;
     }
 
     public List<Automobile> getAutomobilesFiltered(Map<String, String> filter) throws SQLException {
         List<Automobile> automobiles;
         try {
-            automobileDAO = (AutomobileDAO) DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, ConnectionPool.getConnection());
+            AutomobileDAO automobileDAO = (AutomobileDAO) DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, ConnectionPool.getConnection());
             automobiles = automobileDAO.getAutomobilesFiltered(filter);
             ConnectionPool.closeConnection();
         } catch (SQLException throwables) {

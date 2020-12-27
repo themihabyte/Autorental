@@ -1,6 +1,9 @@
 package controller;
 
+import model.service.ErrorSender;
 import model.service.UnauthorizedUserService;
+import model.service.UserAdministratorService;
+import model.service.UserService;
 import view.Validator;
 
 import javax.servlet.ServletException;
@@ -28,12 +31,11 @@ public class RegisterServlet extends HttpServlet {
     private boolean validateUsernamePassword(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                           String username, String password) throws ServletException, IOException {
         Validator validator = new Validator();
-        if (!(validator.validateUsername(username) && validator.validatePassword(password))){
-            String errorMessage = "Invalid username or password";
-            httpServletRequest.setAttribute("error_message", errorMessage);
-            httpServletRequest
-                    .getRequestDispatcher("/register")
-                    .forward(httpServletRequest, httpServletResponse);
+        try {
+            validator.validateUsernamePassword(username, password);
+        } catch (RuntimeException validationError){
+            new ErrorSender().sendErrorToJSP(httpServletRequest, httpServletResponse,
+                    validationError.getMessage(), "/register");
             return false;
         }
         return true;
@@ -41,17 +43,24 @@ public class RegisterServlet extends HttpServlet {
     private boolean registerUser(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                               String username, String password) throws ServletException, IOException {
         HttpSession session = httpServletRequest.getSession();
-        UnauthorizedUserService service = (UnauthorizedUserService) session.getAttribute("service");
-        try {
-            service.register(username, password);
-        } catch (SQLException sqlException) {
-            String errorMessage = sqlException.getMessage();
-            httpServletRequest.setAttribute("error_message", errorMessage);
-            httpServletRequest
-                    .getRequestDispatcher("/register-page")
-                    .forward(httpServletRequest, httpServletResponse);
-            return false;
+        UserService service = (UserService) session.getAttribute("service");
+        if (service instanceof UnauthorizedUserService){
+            try {
+                ((UnauthorizedUserService) service).register(username, password);
+            } catch (SQLException sqlException) {
+                new ErrorSender().sendErrorToJSP(httpServletRequest, httpServletResponse,
+                        sqlException.getMessage(), "/register-page");
+                return false;
+            }
+        } else if (service instanceof UserAdministratorService){
+            try {
+                ((UserAdministratorService) service).registerManager(username, password);
+            } catch (SQLException sqlException) {
+                new ErrorSender().sendErrorToJSP(httpServletRequest, httpServletResponse,
+                        sqlException.getMessage(), "/register-page");
+            }
         }
+
         return true;
     }
 }

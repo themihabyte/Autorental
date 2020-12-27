@@ -70,6 +70,24 @@
     <url-pattern>/order</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>usersOrders</servlet-name>
+    <jsp-file>/usersOrders.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>usersOrders</servlet-name>
+    <url-pattern>/users-orders</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>addAutomobile</servlet-name>
+    <jsp-file>/addAutomobile.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>addAutomobile</servlet-name>
+    <url-pattern>/add-automobile</url-pattern>
+  </servlet-mapping>
+
   <filter>
     <filter-name>AuthFilter</filter-name>
     <filter-class>controller.filter.AuthFilter</filter-class>
@@ -94,7 +112,7 @@
 
 
 <welcome-file-list>
-  <welcome-file>index.jsp</welcome-file>
+  <welcome-file>/start-page</welcome-file>
 </welcome-file-list>
 
 </web-app>

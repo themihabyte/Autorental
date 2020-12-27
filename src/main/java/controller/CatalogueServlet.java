@@ -2,6 +2,8 @@ package controller;
 
 import model.entity.Automobile;
 import model.service.CatalogueService;
+import model.service.DataLoader;
+import model.service.ErrorSender;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,23 +19,26 @@ public class CatalogueServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
         CatalogueService catalogueService = new CatalogueService();
+        DataLoader dataLoader = new DataLoader();
         List<Automobile> automobiles =null;
         Map<String, String[]> params = httpServletRequest.getParameterMap();
 
         try {
-            automobiles = filterAutomobilesWithParameters(params, catalogueService);
+            automobiles = filterAutomobilesWithParameters(params, catalogueService, dataLoader);
         } catch (SQLException sqlException) {
-            sendErrorBackToJSP(httpServletRequest, httpServletResponse, sqlException.getMessage());
+            new ErrorSender().sendErrorToJSP(httpServletRequest, httpServletResponse,
+                    sqlException.getMessage(), "/catalogue-page");
+            return;
         }
         sortAutomobilesWithParameter(params, catalogueService, automobiles);
         httpServletRequest.setAttribute("list", automobiles);
 
         List<String> manufacturers;
         try {
-            manufacturers = catalogueService.getManufacturers();
+            manufacturers = dataLoader.getManufacturers();
         } catch (SQLException sqlException) {
-            sendErrorBackToJSP(httpServletRequest, httpServletResponse,
-                    sqlException.getMessage());
+            new ErrorSender().sendErrorToJSP(httpServletRequest,
+                    httpServletResponse, sqlException.getMessage(), "/catalogue-page");
             return;
         }
         httpServletRequest.setAttribute("manufacturers", manufacturers);
@@ -42,7 +47,7 @@ public class CatalogueServlet extends HttpServlet {
                 .forward(httpServletRequest, httpServletResponse);
     }
 
-    private List<Automobile> filterAutomobilesWithParameters(Map<String, String[]> params, CatalogueService catalogueService) throws SQLException {
+    private List<Automobile> filterAutomobilesWithParameters(Map<String, String[]> params, CatalogueService catalogueService, DataLoader dataLoader) throws SQLException {
         List<Automobile> automobiles;
         if (params.containsKey("filter")) {
             Map<String, String> filters = new HashMap<>();
@@ -52,9 +57,9 @@ public class CatalogueServlet extends HttpServlet {
             entrySet.removeIf(entry -> entry.getValue().equals("none"));
             if (!filters.isEmpty())
                 automobiles = catalogueService.getAutomobilesFiltered(filters);
-            else automobiles = catalogueService.getAllAutomobiles();
+            else automobiles = dataLoader.getAllAutomobiles();
         } else {
-            automobiles = catalogueService.getAllAutomobiles();
+            automobiles = dataLoader.getAllAutomobiles();
         }
         return automobiles;
     }
@@ -73,12 +78,5 @@ public class CatalogueServlet extends HttpServlet {
                     break;
             }
         }
-    }
-    private void sendErrorBackToJSP(HttpServletRequest httpServletRequest,
-                                    HttpServletResponse httpServletResponse,
-                                    String errorMessage) throws ServletException, IOException {
-        httpServletRequest.setAttribute("error_message", errorMessage);
-        httpServletRequest.getRequestDispatcher("/catalogue-page").forward(httpServletRequest,
-                httpServletResponse);
     }
 }

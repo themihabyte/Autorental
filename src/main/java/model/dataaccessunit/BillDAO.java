@@ -69,7 +69,7 @@ public class BillDAO extends DAO<Bill>{
     @Override
     public int create(Bill entity) throws SQLException {
         String SQL = "INSERT INTO bills (order_id, price, is_payed)"+
-                " VALUES (?, ?, ?)"; // TODO
+                " VALUES (?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(SQL,
                 Statement.RETURN_GENERATED_KEYS);
         statement.setInt(1, entity.getOrderId());

@@ -68,11 +68,10 @@ public class AutomobileDAO extends DAO<Automobile> {
         Statement statement = connection.createStatement();
         statement.addBatch(SQL);
 
-        if (!getManufacturers().contains(entity.getManufacturer())){
-            SQL = "INSERT INTO manufacturers (manufacturer)" +
-                    " VALUES ('" + entity.getManufacturer() + "')";
-            statement.addBatch(SQL);
-        }
+        SQL = "INSERT INTO manufacturers (manufacturer)" +
+                " VALUES ('" + entity.getManufacturer() + "')" +
+                " ON CONFLICT (manufacturer) DO NOTHING";
+        statement.addBatch(SQL);
 
         SQL = "UPDATE automobiles_manufacturers" +
                 " SET manufacturer = " + "'" + entity.getManufacturer() + "'" +
@@ -86,16 +85,22 @@ public class AutomobileDAO extends DAO<Automobile> {
 
     @Override
     public void delete(int id) throws SQLException {
-        String SQL = "DELETE FROM automobiles SET name = " +
-                " WHERE automobile_id = " + id;
         connection.setAutoCommit(false);
         Statement statement = connection.createStatement();
-        statement.addBatch(SQL);
-
-        SQL = "DELETE FROM automobiles_manufacturers" +
+        String SQL = "DELETE FROM automobiles_manufacturers" +
                 " WHERE automobile_id = " + id;
         statement.addBatch(SQL);
-        statement.executeBatch();
+
+        SQL = "DELETE FROM automobiles" +
+                " WHERE automobile_id = " + id;
+        statement.addBatch(SQL);
+        try {
+            statement.executeBatch();
+        } catch (SQLException sqlException){
+            connection.rollback();
+            throw new SQLException("You can`t delete this automobile," +
+                    " it`s in use");
+        }
         connection.commit();
         connection.setAutoCommit(true);
         close(statement);
@@ -103,29 +108,46 @@ public class AutomobileDAO extends DAO<Automobile> {
 
     @Override
     public int create(Automobile entity) throws SQLException {
-        String SQL = "INSERT INTO automobiles (automobile_id, name, price, " +
-                "is_in_stock, segment) VALUES(" +
-                entity.getId() + "," + "'" + entity.getName() + "', " +
+        String SQL = "INSERT INTO automobiles (name, price, " +
+                "is_in_stock, segment) VALUES ('" +
+                entity.getName() + "', " +
                 entity.getPrice() + ", " + entity.isInStock() +
                 ", " + "'" + entity.getSegment() + "')";
         connection.setAutoCommit(false);
-        Statement statement = connection.createStatement();
-        statement.addBatch(SQL);
+        PreparedStatement statement = connection.prepareStatement(SQL,
+                Statement.RETURN_GENERATED_KEYS);
 
-        if (!getManufacturers().contains(entity.getManufacturer())) {
-            SQL = "INSERT INTO manufacturers (manufacturer)" +
-                    " VALUES ('" + entity.getManufacturer() + "')";
-            statement.addBatch(SQL);
+        try {
+            statement.executeUpdate();
+        } catch (SQLException sqlException) {
+            connection.rollback();
+            throw sqlException;
         }
+        ResultSet resultSet = statement.getGeneratedKeys();
+        resultSet.next();
+        entity.setId(resultSet.getInt(1));
+        close(statement);
+
+        Statement statement1 = connection.createStatement();
+        SQL = "INSERT INTO manufacturers (manufacturer)" +
+                " VALUES ('" + entity.getManufacturer() + "')" +
+                " ON CONFLICT (manufacturer) DO NOTHING";
+        statement1.addBatch(SQL);
+
 
         SQL = "INSERT INTO automobiles_manufacturers(automobile_id, manufacturer)" +
-                " VALUES("+entity.getId()+", '" + entity.getManufacturer() + "')";
-        statement.addBatch(SQL);
-        int id = statement.executeBatch()[0];
+                " VALUES(" + entity.getId() + ", '" + entity.getManufacturer() + "')";
+        statement1.addBatch(SQL);
+        try {
+            statement1.executeBatch();
+        } catch (SQLException sqlException) {
+            connection.rollback();
+            throw sqlException;
+        }
         connection.commit();
         connection.setAutoCommit(true);
-        close(statement);
-        return id;
+        close(statement1);
+        return entity.getId();
     }
 
     public List<Automobile> getAutomobilesFiltered(Map<String, String> filter) throws SQLException {

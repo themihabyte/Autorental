@@ -1,6 +1,7 @@
 package controller;
 
 import model.entity.Order;
+import model.service.ErrorSender;
 import model.service.UserCustomerService;
 
 import javax.servlet.RequestDispatcher;
@@ -24,18 +25,13 @@ public class CustomerPersonalPageServlet extends HttpServlet {
         try {
             orders = service.getAllCustomerOrders();
         } catch (SQLException sqlException) {
-            sendErrorBackToJSP(httpServletRequest, httpServletResponse, sqlException.getMessage());
+            new ErrorSender().sendErrorToJSP(httpServletRequest,
+                    httpServletResponse, sqlException.getMessage(), "/customer-personal-page");
+            return;
         }
         httpServletRequest.setAttribute("list", orders);
 
         RequestDispatcher dispatcher = httpServletRequest.getRequestDispatcher("/customer-personal-page");
         dispatcher.forward(httpServletRequest, httpServletResponse);
-    }
-    private void sendErrorBackToJSP(HttpServletRequest httpServletRequest,
-                                    HttpServletResponse httpServletResponse,
-                                    String errorMessage) throws ServletException, IOException {
-        httpServletRequest.setAttribute("error_message", errorMessage);
-        httpServletRequest.getRequestDispatcher("/customer-personal-page").forward(httpServletRequest,
-                httpServletResponse);
     }
 }

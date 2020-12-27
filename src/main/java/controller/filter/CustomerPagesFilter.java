@@ -22,7 +22,7 @@ public class CustomerPagesFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         HttpSession session = req.getSession();
         UserService service = (UserService) session.getAttribute("service");
-        if (!(service instanceof UserCustomerService)){
+        if (!(service instanceof UserCustomerService)||((UserCustomerService) service).getUser().isBanned()){
             res.sendRedirect("/access-denied.html");
         } else {
             RequestDispatcher dispatcher = req.getRequestDispatcher(req.getRequestURI());

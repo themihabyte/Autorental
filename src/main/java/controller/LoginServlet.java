@@ -1,6 +1,7 @@
 package controller;
 
 import model.dataaccessunit.DAOFactory;
+import model.service.ErrorSender;
 import model.service.UnauthorizedUserService;
 import model.service.UserService;
 import model.service.UserServiceFactory;
@@ -13,9 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.Map;
 
 @WebServlet(name = "Login", urlPatterns = {"/login-servlet"})
 public class LoginServlet extends HttpServlet {
@@ -38,11 +37,8 @@ public class LoginServlet extends HttpServlet {
         try {
             service = ((UnauthorizedUserService) userService).login(username, password);
         } catch (SQLException sqlException) {
-            String errorMessage = sqlException.getMessage();
-            httpServletRequest.setAttribute("error_message", errorMessage);
-            httpServletRequest
-                    .getRequestDispatcher("/login")
-                    .forward(httpServletRequest, httpServletResponse);
+            new ErrorSender().sendErrorToJSP(httpServletRequest,
+                    httpServletResponse, sqlException.getMessage(), "/login");
             return false;
         }
         session.setAttribute("service", service);

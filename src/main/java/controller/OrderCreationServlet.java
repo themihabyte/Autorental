@@ -1,5 +1,6 @@
 package controller;
 
+import model.service.ErrorSender;
 import model.service.UserCustomerService;
 import view.Validator;
 
@@ -19,16 +20,17 @@ public class OrderCreationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-        Map<String, String[]> params= httpServletRequest.getParameterMap();
+        Map<String, String[]> params = httpServletRequest.getParameterMap();
         params.putIfAbsent("isHasDriver", new String[]{"false"});
 
         HttpSession session = httpServletRequest.getSession();
         UserCustomerService service = (UserCustomerService) session.getAttribute("service");
 
-        String errorMessage = validateParameters(params);
-        if (errorMessage != null){
-            sendErrorToJSP(httpServletRequest, httpServletResponse,
-                    errorMessage);
+        try {
+            validateParameters(params);
+        } catch (RuntimeException runtimeException){
+            new ErrorSender().sendErrorToJSP(httpServletRequest, httpServletResponse,
+                    runtimeException.getMessage(), "/create-order");
             return;
         }
 
@@ -37,10 +39,10 @@ public class OrderCreationServlet extends HttpServlet {
             orderID = service.makeOrder(params.get("passportDetails")[0],
                     params.get("date")[0],
                     params.get("date")[1], Boolean.parseBoolean(params.get("isHasDriver")[0]),
-                   Integer.parseInt(params.get("autoId")[0]));
+                    Integer.parseInt(params.get("autoId")[0]));
         } catch (SQLException sqlException) {
-            sendErrorToJSP(httpServletRequest, httpServletResponse,
-                    sqlException.getMessage());
+            new ErrorSender().sendErrorToJSP(httpServletRequest,
+                    httpServletResponse, sqlException.getMessage(), "/create-order");
             return;
         }
 
@@ -54,29 +56,10 @@ public class OrderCreationServlet extends HttpServlet {
         dispatcher.forward(httpServletRequest, httpServletResponse);
     }
 
-    private String validateParameters(Map<String, String[]> params){
-        String errorMessage = null;
-            Validator validator = new Validator();
-            if (!validator.validatePassportDetails(params.get("passportDetails")[0])){
-                errorMessage = "Invalid passport details";
-            }
-            if (!validator.validateDate(params.get("date")[0],
-                    params.get("date")[1])){
-                if (errorMessage!=null){
-                    errorMessage+=", date";
-                } else {
-                    errorMessage = "Invalid date";
-                }
-            }
-
-        return errorMessage;
-    }
-    private void sendErrorToJSP(HttpServletRequest httpServletRequest,
-                                HttpServletResponse httpServletResponse,
-                                String errorMessage) throws ServletException, IOException {
-        httpServletRequest.setAttribute("error_message", errorMessage);
-        httpServletRequest
-                .getRequestDispatcher("/create-order")
-                .forward(httpServletRequest, httpServletResponse);
+    private void validateParameters(Map<String, String[]> params) {
+        Validator validator = new Validator();
+        validator.validatePassportDetails(params.get("passportDetails")[0]);
+        validator.validateDate(params.get("date")[0],
+                params.get("date")[1]);
     }
 }

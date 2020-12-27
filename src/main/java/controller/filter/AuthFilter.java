@@ -22,25 +22,16 @@ public class AuthFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         HttpSession session = req.getSession();
         UserService service = (UserService) session.getAttribute("service");
-        String url = "";
         if (service==null){
             service = UserServiceFactory.getUserService();
             session.setAttribute("service", service);
-            url = "/start-page";
-        } else if (service instanceof UserAdministratorService){
-            url="/admin-page";
-        } else if (service instanceof UserCustomerService) {
-            if (((UserCustomerService) service).getUser().isBanned()){
-                url="/access-denied";
-            } else {
-                url="/start-page";
-            }
-        } else if (service instanceof UserManagerService) {
-            url="/manager-page";
+        } else if (service instanceof UserCustomerService && ((UserCustomerService) service)
+                .getUser().isBanned()) {
+                res.sendRedirect("/access-denied.html");
+                return;
         }
 
-        RequestDispatcher dispatcher = req.getRequestDispatcher(url);
-        dispatcher.forward(req, res);
+        servletRequest.getRequestDispatcher("/start-page").forward(req, res);
     }
 
     @Override

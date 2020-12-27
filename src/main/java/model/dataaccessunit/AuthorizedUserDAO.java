@@ -54,16 +54,17 @@ public class AuthorizedUserDAO extends DAO<User> {
     @Override
     public void update(User entity) throws SQLException {
         String SQL = "UPDATE users" +
-                " SET username = ?"+
-                " password = ?" +
-                " role = ?" +
+                " SET username = ?,"+
+                " password = ?," +
+                " role = ?," +
                 " is_banned = ?" +
                 " WHERE user_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(SQL);
         preparedStatement.setString(1, entity.getUsername());
-        preparedStatement.setString(2, String.valueOf(entity.getRole()));
-        preparedStatement.setBoolean(3, entity.isBanned());
-        preparedStatement.setInt(4, entity.getId());
+        preparedStatement.setString(2, entity.getPassword());
+        preparedStatement.setString(3, String.valueOf(entity.getRole()));
+        preparedStatement.setBoolean(4, entity.isBanned());
+        preparedStatement.setInt(5, entity.getId());
         preparedStatement.executeUpdate();
         close(preparedStatement);
     }
@@ -113,5 +114,21 @@ public class AuthorizedUserDAO extends DAO<User> {
                 resultSet.getString("password"),
                 UserServiceFactory.UserRole.valueOf(resultSet.getString("role")),
                 resultSet.getBoolean("is_banned"));
+    }
+
+    public List<User> getAllCustomers() throws SQLException {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE role = 'CUSTOMER'";
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        while (resultSet.next()) {
+            User user = new User(resultSet.getInt("user_id"),
+                    resultSet.getString("username"),
+                    resultSet.getString("password"),
+                    UserServiceFactory.UserRole.CUSTOMER, resultSet.getBoolean("is_banned"));
+            users.add(user);
+        }
+        close(statement);
+        return users;
     }
 }

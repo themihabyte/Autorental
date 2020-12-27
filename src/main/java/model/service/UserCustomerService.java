@@ -69,10 +69,10 @@ public class UserCustomerService extends AuthorizedUserService {
     }
 
     public List<Order> getAllCustomerOrders() throws SQLException {
-        return new OrdersService().getAllCustomerOrders(this.user.getId());
+        return new DataLoader().getAllCustomerOrders(this.user.getId());
     }
 
     public Order getOrderById(int ID){
-        return new OrdersService().getOrderById(ID);
+        return new DataLoader().getOrderById(ID);
     }
 }
