@@ -1,12 +1,8 @@
 package controller;
 
-import model.dataaccessunit.DAOFactory;
-import model.service.ErrorSender;
 import model.service.UnauthorizedUserService;
 import model.service.UserService;
-import model.service.UserServiceFactory;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

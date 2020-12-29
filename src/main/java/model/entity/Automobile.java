@@ -1,6 +1,6 @@
 package model.entity;
 
-import java.util.List;
+import java.util.Objects;
 
 public class Automobile {
     public enum Segment {
@@ -44,6 +44,19 @@ public class Automobile {
 
     public void setSegment(Segment segment) {
         this.segment = segment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Automobile that = (Automobile) o;
+        return Float.compare(that.price, price) == 0 && segment == that.segment && name.equals(that.name) && manufacturer.equals(that.manufacturer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(segment, name, manufacturer, price);
     }
 
     public String getName() {

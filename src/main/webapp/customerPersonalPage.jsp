@@ -29,7 +29,6 @@
                         </th>
                         <th>
                             <form action="/order-servlet" method="POST">
-                                <input type="hidden" id="action" name="action" value="orderDetails">
                                 <input type="hidden" id="order_id" name="order_id" value="${element.getId()}">
                                 <input type="submit" value="Details">
                             </form>

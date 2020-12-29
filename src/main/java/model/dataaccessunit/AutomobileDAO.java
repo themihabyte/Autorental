@@ -64,7 +64,6 @@ public class AutomobileDAO extends DAO<Automobile> {
                 " price = " + entity.getPrice() + ", is_in_stock = " + entity.isInStock()
                 + ", segment = " + "'" + entity.getSegment() + "'" +
                 " WHERE automobile_id = " + entity.getId();
-        connection.setAutoCommit(false);
         Statement statement = connection.createStatement();
         statement.addBatch(SQL);
 
@@ -78,14 +77,11 @@ public class AutomobileDAO extends DAO<Automobile> {
                 " WHERE automobile_id = " + entity.getId();
         statement.addBatch(SQL);
         statement.executeBatch();
-        connection.commit();
-        connection.setAutoCommit(true);
         close(statement);
     }
 
     @Override
     public void delete(int id) throws SQLException {
-        connection.setAutoCommit(false);
         Statement statement = connection.createStatement();
         String SQL = "DELETE FROM automobiles_manufacturers" +
                 " WHERE automobile_id = " + id;
@@ -96,13 +92,10 @@ public class AutomobileDAO extends DAO<Automobile> {
         statement.addBatch(SQL);
         try {
             statement.executeBatch();
-        } catch (SQLException sqlException){
-            connection.rollback();
+        } catch (SQLException sqlException) {
             throw new SQLException("You can`t delete this automobile," +
                     " it`s in use");
         }
-        connection.commit();
-        connection.setAutoCommit(true);
         close(statement);
     }
 
@@ -113,16 +106,10 @@ public class AutomobileDAO extends DAO<Automobile> {
                 entity.getName() + "', " +
                 entity.getPrice() + ", " + entity.isInStock() +
                 ", " + "'" + entity.getSegment() + "')";
-        connection.setAutoCommit(false);
         PreparedStatement statement = connection.prepareStatement(SQL,
                 Statement.RETURN_GENERATED_KEYS);
+        statement.executeUpdate();
 
-        try {
-            statement.executeUpdate();
-        } catch (SQLException sqlException) {
-            connection.rollback();
-            throw sqlException;
-        }
         ResultSet resultSet = statement.getGeneratedKeys();
         resultSet.next();
         entity.setId(resultSet.getInt(1));
@@ -138,14 +125,8 @@ public class AutomobileDAO extends DAO<Automobile> {
         SQL = "INSERT INTO automobiles_manufacturers(automobile_id, manufacturer)" +
                 " VALUES(" + entity.getId() + ", '" + entity.getManufacturer() + "')";
         statement1.addBatch(SQL);
-        try {
-            statement1.executeBatch();
-        } catch (SQLException sqlException) {
-            connection.rollback();
-            throw sqlException;
-        }
-        connection.commit();
-        connection.setAutoCommit(true);
+        statement1.executeBatch();
+
         close(statement1);
         return entity.getId();
     }

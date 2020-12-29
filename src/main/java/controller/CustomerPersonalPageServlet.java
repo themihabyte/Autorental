@@ -1,7 +1,6 @@
 package controller;
 
 import model.entity.Order;
-import model.service.ErrorSender;
 import model.service.UserCustomerService;
 
 import javax.servlet.RequestDispatcher;

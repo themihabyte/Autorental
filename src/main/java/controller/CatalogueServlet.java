@@ -3,7 +3,6 @@ package controller;
 import model.entity.Automobile;
 import model.service.CatalogueService;
 import model.service.DataLoader;
-import model.service.ErrorSender;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,9 +15,16 @@ import java.util.*;
 
 @WebServlet("/catalogue-servlet")
 public class CatalogueServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-        CatalogueService catalogueService = new CatalogueService();
+        CatalogueService catalogueService = null;
+        try {
+            catalogueService = new CatalogueService();
+        } catch (SQLException sqlException) {
+            new ErrorSender().sendErrorToJSP(httpServletRequest, httpServletResponse,
+                    sqlException.getMessage(), "/start-page");
+        }
         DataLoader dataLoader = new DataLoader();
         List<Automobile> automobiles =null;
         Map<String, String[]> params = httpServletRequest.getParameterMap();

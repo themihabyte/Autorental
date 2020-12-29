@@ -2,9 +2,25 @@ package model.entity;
 
 import model.service.UserServiceFactory;
 
+import java.util.Objects;
+
 public class User {
     ;
     private int id;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return username.equals(user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
+    }
+
     private String username;
     private String password;
     private UserServiceFactory.UserRole role;

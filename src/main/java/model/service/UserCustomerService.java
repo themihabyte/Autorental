@@ -20,26 +20,25 @@ public class UserCustomerService extends AuthorizedUserService {
     }
 
     public int makeOrder(String passportDetails, String startDate, String endDate, boolean isHasDriver, int automobileID) throws SQLException {
-        Connection connection;
-        try {
-            connection = ConnectionPool.getConnection();
-            connection.setAutoCommit(false);
-        } catch (SQLException sqlException) {
-            throw new SQLException("no connection to DataBase");
-        }
         Order order = new Order(this.user.getId(), automobileID,
                 passportDetails, startDate, endDate, isHasDriver, false);
         Automobile automobile;
+
+        Connection connection = ConnectionPool.getConnection();
+        connection.setAutoCommit(false);
         try {
             orderDAO = DAOFactory.getDAO(DAOFactory.Entities.ORDER, connection);
             int orderId;
             orderId = orderDAO.create(order);
+
             if (orderId != -1) {
                 order.setId(orderId);
             }
 
             automobileDAO = DAOFactory.getDAO(DAOFactory.Entities.AUTOMOBILE, connection);
             automobile = (Automobile) automobileDAO.getEntityByID(automobileID);
+            automobile.setInStock(false);
+            automobileDAO.update(automobile);
 
             float price = ChronoUnit.DAYS.between(LocalDate.parse(startDate), LocalDate.parse(endDate)) * automobile.getPrice();
             Bill bill = new Bill(orderId, price, false);
@@ -53,6 +52,7 @@ public class UserCustomerService extends AuthorizedUserService {
         } finally {
             connection.close();
         }
+
         return order.getId();
     }
 

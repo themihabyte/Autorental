@@ -2,8 +2,10 @@ package model.service;
 
 import model.entity.User;
 
+import java.sql.SQLException;
+
 public class UserServiceFactory {
-    public static UserService getUserService(User user){
+    public static UserService getUserService(User user) throws SQLException {
         if (user == null){
             return new UnauthorizedUserService();
         } else {
@@ -20,7 +22,7 @@ public class UserServiceFactory {
         }
         return null;
     }
-    public static UserService getUserService(){
+    public static UserService getUserService() throws SQLException {
         return new UnauthorizedUserService();
     }
     public enum UserRole {ADMINISTRATOR, MANAGER, CUSTOMER, UNAUTHORIZED_USER}

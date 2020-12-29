@@ -1,6 +1,5 @@
 package controller;
 
-import model.service.ErrorSender;
 import model.service.UserCustomerService;
 import view.Validator;
 

@@ -1,6 +1,5 @@
 package controller;
 
-import model.service.ErrorSender;
 import model.service.UnauthorizedUserService;
 import model.service.UserAdministratorService;
 import model.service.UserService;

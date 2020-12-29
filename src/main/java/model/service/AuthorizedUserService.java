@@ -5,7 +5,7 @@ import model.entity.User;
 
 
 public abstract class AuthorizedUserService implements UserService {
-    protected User user;
+    User user;
     DAO automobileDAO;
     DAO billDAO;
     DAO orderDAO;

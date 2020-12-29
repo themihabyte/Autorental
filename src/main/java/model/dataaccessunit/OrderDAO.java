@@ -63,21 +63,21 @@ public class OrderDAO extends DAO<Order>{
     @Override
     public void update(Order entity) throws SQLException {
         String SQL = "UPDATE orders" +
-                " SET user_id = ?" +
-                " automobile_id = ?" +
-                " passport_details = ?" +
-                " start_date = ?" +
-                " end_date = ?" +
-                " has_driver = ?" +
-                " is_denied = ?" +
+                " SET user_id = ?," +
+                " automobile_id = ?," +
+                " passport_details = ?," +
+                " start_date = ?," +
+                " end_date = ?," +
+                " has_driver = ?," +
+                " is_denied = ?," +
                 " rejection_reason = ?" +
                 " WHERE order_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(SQL);
         preparedStatement.setInt(1, entity.getUserID());
         preparedStatement.setInt(2, entity.getAutomobileID());
         preparedStatement.setString(3, entity.getPassportDetails());
-        preparedStatement.setString(4, entity.getStartDate());
-        preparedStatement.setString(5, entity.getEndDate());
+        preparedStatement.setDate(4, Date.valueOf(entity.getStartDate()));
+        preparedStatement.setDate(5, Date.valueOf(entity.getEndDate()));
         preparedStatement.setBoolean(6, entity.isHasDriver());
         preparedStatement.setBoolean(7, entity.isDenied());
         preparedStatement.setString(8, entity.getRejectionReason());
