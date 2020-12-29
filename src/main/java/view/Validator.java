@@ -36,9 +36,15 @@ public class Validator {
         }
     }
 
-    public void validateName(String name){
+    public void validateAutomobileName(String name){
         if (!name.matches("^[A-Z](\\w)+$")){
             throw new RuntimeException(name+" is incorrect input");
+        }
+    }
+
+    public void validateReason(String reason){
+        if (reason.isEmpty() || !reason.matches("^[a-zA-Z0-9_.\\-\\s]*$")){
+            throw new RuntimeException("Invalid reason");
         }
     }
 }

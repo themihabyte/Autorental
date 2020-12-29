@@ -110,6 +110,16 @@
     <url-pattern>/payment-servlet</url-pattern>
   </filter-mapping>
 
+  <filter>
+    <filter-name>StaffPagesFilter</filter-name>
+    <filter-class>controller.filter.StaffPagesFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>StaffPagesFilter</filter-name>
+    <url-pattern>/users-orders</url-pattern>
+    <url-pattern>/add-automobile</url-pattern>
+  </filter-mapping>
+
 
 <welcome-file-list>
   <welcome-file>/start-page</welcome-file>

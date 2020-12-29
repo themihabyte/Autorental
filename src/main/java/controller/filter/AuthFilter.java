@@ -1,5 +1,6 @@
 package controller.filter;
 
+import controller.ErrorSender;
 import model.service.*;
 
 import javax.servlet.*;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebFilter(urlPatterns = {"/start-page"})
 public class AuthFilter implements Filter {
@@ -23,7 +25,12 @@ public class AuthFilter implements Filter {
         HttpSession session = req.getSession();
         UserService service = (UserService) session.getAttribute("service");
         if (service==null){
-            service = UserServiceFactory.getUserService();
+            try {
+                service = UserServiceFactory.getUserService();
+            } catch (SQLException sqlException) {
+                new ErrorSender().sendErrorToJSP(req, res,
+                        sqlException.getMessage(), "/start-page");
+            }
             session.setAttribute("service", service);
         } else if (service instanceof UserCustomerService && ((UserCustomerService) service)
                 .getUser().isBanned()) {

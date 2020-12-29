@@ -1,10 +1,6 @@
 package controller;
 
 import model.entity.Automobile;
-import model.entity.Order;
-import model.entity.User;
-import model.service.DataLoader;
-import model.service.ErrorSender;
 import model.service.UserAdministratorService;
 import view.Validator;
 
@@ -16,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 @WebServlet(urlPatterns = "/administrator-servlet")
@@ -40,7 +35,7 @@ public class AdministratorServlet extends HttpServlet {
                 }
                 break;
             case "ban_customer":
-                if (banCustomer(httpServletRequest, httpServletResponse)) {
+                if (changeCustomerBanStatus(httpServletRequest, httpServletResponse)) {
                     httpServletResponse.sendRedirect("/users-orders");
                 }
                 break;
@@ -51,26 +46,10 @@ public class AdministratorServlet extends HttpServlet {
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
         switch (httpServletRequest.getParameter("action")) {
             case "show_customers":
-                showCustomers(httpServletRequest, httpServletResponse);
+                httpServletRequest.getRequestDispatcher("/show-customers-servlet")
+                        .forward(httpServletRequest, httpServletResponse);
                 break;
         }
-    }
-
-    private void showCustomers(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-        DataLoader dataLoader = new DataLoader();
-        Map<User, List<Order>> userOrdersMap = null;
-        try {
-            userOrdersMap = dataLoader
-                    .getAllCustomersAndTheirOrders();
-        } catch (SQLException sqlException) {
-            new ErrorSender().sendErrorToJSP(httpServletRequest, httpServletResponse,
-                    sqlException.getMessage(), "/users-orders");
-        }
-
-        httpServletRequest.setAttribute("usersOrdersMap", userOrdersMap);
-        httpServletRequest
-                .getRequestDispatcher("/users-orders")
-                .forward(httpServletRequest, httpServletResponse);
     }
 
     private boolean addAutomobile(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
@@ -81,8 +60,8 @@ public class AdministratorServlet extends HttpServlet {
         Validator validator = new Validator();
         try {
             validator.validatePrice(params.get("price")[0]);
-            validator.validateName(params.get("manufacturer")[0]);
-            validator.validateName(params.get("name")[0]);
+            validator.validateAutomobileName(params.get("manufacturer")[0]);
+            validator.validateAutomobileName(params.get("name")[0]);
         } catch (RuntimeException runtimeException) {
             new ErrorSender().sendErrorToJSP(httpServletRequest,
                     httpServletResponse, runtimeException.getMessage(),
@@ -117,12 +96,12 @@ public class AdministratorServlet extends HttpServlet {
         return true;
     }
 
-    private boolean banCustomer(HttpServletRequest httpServletRequest,
-                                HttpServletResponse httpServletResponse) throws ServletException, IOException {
+    private boolean changeCustomerBanStatus(HttpServletRequest httpServletRequest,
+                                            HttpServletResponse httpServletResponse) throws ServletException, IOException {
         HttpSession session = httpServletRequest.getSession();
         UserAdministratorService service = (UserAdministratorService) session.getAttribute("service");
         try {
-            service.banCustomer(Integer.parseInt(httpServletRequest.getParameter("customer_id")));
+            service.changeCustomerBanStatus(Integer.parseInt(httpServletRequest.getParameter("customer_id")));
         } catch (SQLException sqlException) {
             new ErrorSender().sendErrorToJSP(httpServletRequest, httpServletResponse,
                     sqlException.getMessage(), "/users-orders");
@@ -140,8 +119,8 @@ public class AdministratorServlet extends HttpServlet {
         Validator validator = new Validator();
         try {
             validator.validatePrice(params.get("price")[0]);
-            validator.validateName(params.get("manufacturer")[0]);
-            validator.validateName(params.get("name")[0]);
+            validator.validateAutomobileName(params.get("manufacturer")[0]);
+            validator.validateAutomobileName(params.get("name")[0]);
         } catch (RuntimeException runtimeException) {
             new ErrorSender().sendErrorToJSP(httpServletRequest,
                     httpServletResponse, runtimeException.getMessage(),

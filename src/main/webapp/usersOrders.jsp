@@ -52,8 +52,8 @@
                             </td>
                             <c:if test="${service['class'].simpleName eq 'UserManagerService'}">
                                 <td>
-                                    <form action="/manager-servlet" method="POST">
-                                        <input type="hidden" id="action" name="order_id" value="${element.getId()}">
+                                    <form action="/order-servlet" method="POST">
+                                        <input type="hidden" id="order_id" name="order_id" value="${order.getId()}">
                                         <input type="submit" value="Details">
                                     </form>
                                 </td>
