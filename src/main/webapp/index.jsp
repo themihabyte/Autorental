@@ -16,16 +16,10 @@
                     <a href="registerPage.jsp">Register</a>
                 </c:when>
                 <c:when test="${service['class'].simpleName eq 'UserCustomerService'}">
-                    <h1>
-                        <c:out value="${service.getUser().getUsername()}" />
-                    </h1>
                     <a href="/logout">Exit</a>
                     <a href="/customer-personal-page-servlet">Personal page</a>
                 </c:when>
                 <c:when test="${service['class'].simpleName eq 'UserAdministratorService'}">
-                    <h1>
-                        <c:out value="${service.getUser().getUsername()}" />
-                    </h1>
                     <a href="/logout">Exit</a>
                     <form action="/administrator-servlet" method="GET">
                         <input type="hidden" id="action" name="action" value="show_customers">
@@ -33,6 +27,13 @@
                     </form>
                     <a href="/register">Register manager</a>
                     <a href="/add-automobile">Add automobile</a>
+                </c:when>
+                <c:when test="${service['class'].simpleName eq 'UserManagerService'}">
+                    <a href="/logout">Exit</a>
+                    <form action="/manager-servlet" method="GET">
+                        <input type="hidden" id="action" name="action" value="show_customers">
+                        <input type="submit" value="Show all customers" />
+                    </form>
                 </c:when>
             </c:choose>
             <c:url value="/catalogue-servlet" var="importUrl"></c:url>

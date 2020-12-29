@@ -35,7 +35,7 @@ public class DataLoader {
 
         return automobiles;
     }
-    Order getOrderById(int ID){
+    public Order getOrderById(int ID){
         Order order = null;
         try {
             OrderDAO orderDAO = (OrderDAO) DAOFactory.getDAO(DAOFactory.Entities.ORDER, ConnectionPool.getConnection());
@@ -73,7 +73,6 @@ public class DataLoader {
         ConnectionPool.closeConnection();
         return users;
     }
-
     public Map<User, List<Order>> getAllCustomersAndTheirOrders() throws SQLException {
         Map<User, List<Order>> userOrdersMap = new HashMap<>();
         List<User> users = getAllCustomers();

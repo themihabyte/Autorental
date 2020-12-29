@@ -8,8 +8,10 @@
         </head>
 
         <body>
-            <a href="/start-page">Home</a>
-            <a href="/customer-personal-page-servlet">Personal page</a><br>
+            <a href="/start-page">Home</a><br>
+            <c:if test="${service['class'].simpleName eq 'UserCustomerService'}">
+                <a href="/customer-personal-page-servlet">Personal page</a><br>
+            </c:if>
             <tr>
                 <th>Order number:</th>
                 <th>
@@ -43,12 +45,6 @@
                     <c:out value="${order.isHasDriver()}" />
                 </th>
             </tr><br>
-            <tr>
-                <c:if test="${order.isDenied() == true}">
-                    Denied. Reason:
-                    <c:out value="${order.getRejectionReason()}" />
-                </c:if>
-            </tr><br>
             <c:choose>
                 <c:when test="${order.isDenied() == false}">
                     <tr>
@@ -71,22 +67,35 @@
                         </th>
 
                         <c:if test="${service['class'].simpleName eq 'UserManagerService'}">
-                            <form action="/order-servlet" method="GET">
-                                <input type="text" id="rejection_reason" name="rejection_reason" />
-                                <input type="submit" value="Deny" />
-                            </form>
-                            <form action="/order-servlet" method="GET">
-                                <input type="hidden" id="automobile_id" name="automobile_id"
-                                    value="${order.getAutomobileId()}">
-                                <input type="submit" value="Automobile received" </form>
+                            <c:if test="${order.getAutomobile().isInStock() == false}">
+                                <form action="/manager-servlet" method="POST">
+                                    <input type="hidden" name="action" value="deny_order" />
+                                    <input type="hidden" name="order_id" value="${order.getId()}" />
+                                    <label for="rejection_reason">Rejection reason</label><br>
+                                    <input type="text" id="rejection_reason" name="rejection_reason" /><br>
+                                    <input type="submit" value="Deny" />
+                                </form>
+
+                                <form action="/manager-servlet" method="POST">
+                                    <input type="hidden" name="action" value="receive_automobile" />
+                                    <input type="hidden" id="automobile_id" name="automobile_id"
+                                        value="${order.getAutomobileID()}" />
+                                    <input type="hidden" id="bill_id" name="bill_id"
+                                        value="${order.getBill().getOrderId()}" />
+                                    <label for="bill_price">Price:</label><br>
+                                    <input type="text" name="bill_price" value="${order.getBill().getPrice()}" />
+                                    <input type="submit" value="Automobile received">
+                                </form>
+                            </c:if>
                         </c:if>
+                    </tr>
                 </c:when>
                 <c:otherwise>
                     <c:out value="${'Order is denied, reason:'}" />
                     <c:out value="${order.getRejectionReason()}" />
                 </c:otherwise>
             </c:choose>
-            </tr>
+            <c:out value="${error_message}" />
         </body>
 
         </html>
