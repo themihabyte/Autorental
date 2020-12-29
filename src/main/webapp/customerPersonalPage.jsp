@@ -1,15 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
+<fmt:setLocale value="${language}"/>
+<fmt:setBundle basename="text"/>
     <%@ page import="java.util.List" %>
         <html>
 
         <head>
             <title>Personal page</title>
-            <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         </head>
 
         <body>
-            <a href="/start-page">Home</a>
-            <h1>Your orders,
+            <a href="/start-page"><fmt:message key='homeButton'/></a>
+            <h1><fmt:message key='personalPage.yourOrders'/>,
                 <c:out value="${service.getUser().getUsername()}" />
             </h1><br>
             <table style="width:100%">
@@ -30,7 +34,7 @@
                         <th>
                             <form action="/order-servlet" method="POST">
                                 <input type="hidden" id="order_id" name="order_id" value="${element.getId()}">
-                                <input type="submit" value="Details">
+                                <input type="submit" value="<fmt:message key='orderDetailsButton'/>">
                             </form>
                         </th>
                     </tr>
